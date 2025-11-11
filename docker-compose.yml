@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    environment:
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGUSER=postgres
+      - PGPASSWORD=@Ayush$123
+      - PGDATABASE=testdb
+      - PORT=3001
+      - KEY_TTL_MINUTES=1440
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/usr/src/app
+    command: ["sh", "-c", "node index.js"]
+
+volumes:
+  pgdata:
